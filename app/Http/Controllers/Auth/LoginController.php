@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -39,14 +41,14 @@ class LoginController extends Controller
 
     //Overrides
     public function showLoginForm(){
+      return "hello from show login";
+    }
+
+    public function login(Request $request){
 
     }
 
-    public function login(){
-
-    }
-
-    public function logout(){
+    public function logout(Request $request){
 
     }
 }
