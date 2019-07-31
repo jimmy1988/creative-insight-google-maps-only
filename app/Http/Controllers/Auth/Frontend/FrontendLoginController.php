@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
-class LoginController extends Controller
+class FrontendLoginController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ class LoginController extends Controller
 
     //Overrides
     public function showLoginForm(){
-      return "hello from show login";
+      return "hello from frontend show login";
     }
 
     public function login(Request $request){
