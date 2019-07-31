@@ -11,10 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+/*
+*   AUTHENTICATION ROUTES
+*/
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+/*
+*   FRONTEND ROUTES
+*/
+Route::get('/', "FrontendPagesController@index")->name('index');
