@@ -22,6 +22,9 @@ class FrontEndPagesController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index(){
-        return view('frontend.pages.index');
+
+      $this->data['menuIsSticky'] = true;
+
+      return view('frontend.pages.index')->with($this->data);
     }
 }
