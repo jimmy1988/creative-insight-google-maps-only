@@ -22,6 +22,6 @@ class FrontEndPagesController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index(){
-        return view('frontend.pages.welcome');
+        return view('frontend.pages.index');
     }
 }
