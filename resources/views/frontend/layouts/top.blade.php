@@ -3,8 +3,7 @@
 
 <head>
     <!-- Page Title -->
-    <title>@if (isset($pageTitle) && !empty($pageTitle)) {{$pageTitle . " - "}} @endif @if (env('APP_NAME')) {{env('APP_NAME')}} @else {{"Creative Insight Developer Test" }} @endif
-    </title>
+    <title>@if (isset($pageTitle) && !empty($pageTitle)) {{$pageTitle . " - "}} @endif @if (env('APP_NAME')) {{env('APP_NAME')}} @else {{"Creative Insight Developer Test" }} @endif </title>
 
     @include('frontend.includes.top.meta-tags')
 

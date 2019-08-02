@@ -1,2 +1,2 @@
 <!--Favicon-->
-{{-- <link href="images/favicon.ico" rel="shortcut icon"> --}}
+<link href="/images/favicon.png" rel="shortcut icon">
