@@ -7,3 +7,43 @@
   display: inline-block;
   width: 100%;
 }
+
+.main-content{
+  position: relative;
+  margin-top: 90px;
+}
+
+#search-container{
+  padding:25px 0;
+}
+
+#search-box{
+  padding:15px;
+  font-size: 17pt;
+}
+
+#search-button {
+  padding: 6px 0;
+  font-size: 17pt;
+  font-weight: 400;
+  display: block;
+  width: 100%;
+}
+
+#search-button span i{
+  color:#FFFFFF;
+  font-size:14pt;
+}
+
+#map {
+   width: 100%;
+   height: 400px;
+   /* height: 100%; */
+   background-color: grey;
+ }
+
+@media screen and (max-width:767px){
+  #search-button-container{
+    margin-top:25px;
+  }
+}
