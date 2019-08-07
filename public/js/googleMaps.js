@@ -1,12 +1,43 @@
 var map;
+var infoWindow;
+var request;
+var service;
+var markers = [];
+
+var currentloc = [];
+
+function returnCurrentPosition(position = 0){
+  if(position == null){
+    return ["52.477564", "-2.0037156"];
+  }else{
+    return [position.coords.latitude, position.coords.longitude];
+  }
+
+}
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(returnCurrentPosition);
+  } else {
+    returnCurrentPosition();
+  }
+}
+
+
 function initialize(){
+
+  currentloc = new Array();
+  getLocation();
+
+  console.log(currentloc);
+
   var center = new google.maps.LatLng(37.422,-122.084058);
   map = new google.maps.Map(document.getElementById('map'),{
     center:center,
     zoom:13
   });
 
-  var request = {
+  request = {
     location:center,
     radius:80047,
     types:['coffee shops']
