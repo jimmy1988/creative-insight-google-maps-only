@@ -1,3 +1,7 @@
+#map-container{
+  margin-bottom:55px;
+}
+
 #main-nav-logo-link{
   display: inline-block;
   width:50px;
@@ -17,9 +21,15 @@
   padding:25px 0;
 }
 
-#search-box{
+#search-box,
+#location-box{
   padding:15px;
   font-size: 17pt;
+}
+
+#distance-box{
+  font-size: 14pt;
+  height:48px;
 }
 
 #search-button {
@@ -40,6 +50,10 @@
    height: 400px;
    /* height: 100%; */
    background-color: grey;
+ }
+
+ .main-block {
+     padding: 15px 0;
  }
 
 @media screen and (max-width:767px){
