@@ -3,51 +3,66 @@ var infoWindow;
 var request;
 var service;
 var markers = [];
-
-var currentloc = [];
-
-function returnCurrentPosition(position = 0){
-  if(position == null){
-    return ["52.477564", "-2.0037156"];
-  }else{
-    return [position.coords.latitude, position.coords.longitude];
-  }
-
-}
+var currentloc = {};
+// return ["52.477564", "-2.0037156"];
+var defaultLat = 52.4786758;
+var defaultLong = -1.9001709;
+var zoomlevel = 16;
 
 function getLocation() {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(returnCurrentPosition);
+    navigator.geolocation.watchPosition(function(position){
+      if(position == null){
+        currentloc.lat = defaultLat;
+        currentloc.long = defaultLong;
+        initializeMap();
+      }else{
+        currentloc.lat = position.coords.latitude;
+        currentloc.long = position.coords.longitude;
+        initializeMap();
+      }
+    }, function(){alert("Geolocation is not enabed in the browser");}, {maximumAge:10000, timeout:5000,enableHighAccuracy: true})
   } else {
-    returnCurrentPosition();
+    currentloc.lat = defaultLat;
+    currentloc.long = defaultLong;
+    initializeMap();
   }
 }
 
 
-function initialize(){
+function initializeMap(){
+  // var inputSearch = document.getElementById("search-box");
+  // var autocomplete = new google.maps.places.Autocomplete(inputSearch);
 
-  currentloc = new Array();
-  getLocation();
-
-  console.log(currentloc);
-
-  var center = new google.maps.LatLng(37.422,-122.084058);
+  // var center = new google.maps.LatLng(defaultLat, defaultLong);
+  var center = new google.maps.LatLng(currentloc.lat, currentloc.long);
   map = new google.maps.Map(document.getElementById('map'),{
     center:center,
-    zoom:13
+    zoom:zoomlevel
   });
 
-  request = {
-    location:center,
-    radius:80047,
-    types:['coffee shops']
-  };
+  otherOptions = {};
+  otherOptions.icon =  {
+     url: "https://image.flaticon.com/icons/svg/60/60834.svg", // url
+     scaledSize: new google.maps.Size(30, 30)
+   };
 
-  infowindow = new google.maps.InfoWindow();
+  currentloc.name = "Your Location";
 
-  var service = new google.maps.places.PlacesService(map);
+  createmarker(currentloc, otherOptions);
 
-  service.nearbySearch(request, callback);
+  // request = {
+  //   location:center,
+  //   radius:80047,
+  //   name: ['nandos'],
+  //   types:['nandos']
+  // };
+  //
+  // infowindow = new google.maps.InfoWindow();
+  //
+  // service = new google.maps.places.PlacesService(map);
+  //
+  // service.nearbySearch(request, callback);
 }
 
 
@@ -59,17 +74,35 @@ function callback(results, status){
   }
 }
 
-function createmarker(place){
-  var placeLoc = place.geometry.location;
-  var marker = new google.maps.Marker({
-    map:map,
-    position:place.geometry.location
-  });
+function createmarker(place, otherMapOptions = null){
 
-  google.maps.event.addListener(marker, 'click', function(){
-    infowindow.setContent(place.name);
-    infowindow.open(map, this);
-  });
+  var mapOptions = {};
+  mapOptions.map = map;
+  if(
+    place.geometry != undefined && place.geometry != null &&
+    place.geometry.location != undefined && place.geometry.location != null
+  ){
+    mapOptions.position = place.geometry.location;
+  }else{
+    mapOptions.position = {lat: place.lat, lng: place.long};
+  }
+
+
+  if(otherMapOptions != null){
+    mapOptions = Object.assign(mapOptions, otherMapOptions);
+  }
+
+  var marker = new google.maps.Marker(mapOptions);
+
+  if(place.name != undefined && place.name != null){
+    google.maps.event.addListener(marker, 'click', function(){
+      infowindow.setContent(place.name);
+      infowindow.open(map, this);
+    });
+  }
+
 }
 
-google.maps.event.addDomListener(window, 'load', initialize);
+// $(document).ready(function(){
+//   getLocation();
+// });
