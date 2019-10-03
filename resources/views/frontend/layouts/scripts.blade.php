@@ -23,5 +23,5 @@
   <script type="text/javascript" src="/js/menuSticky.js"></script>
 @endif
 
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ Config::get('constants.options.googleMapsAPIKey') }}&libraries=places"></script>
 <script type="text/javascript" src="/js/googleMaps.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ Config::get('constants.options.googleMapsAPIKey') }}&callback=getLocation&libraries=places"></script>
