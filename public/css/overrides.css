@@ -1,10 +1,15 @@
+.no-gutters{
+  padding:0 !important;
+  margin: 0 !important;
+}
+
 #map-container{
   margin-bottom:55px;
 }
 
 #main-nav-logo-link{
   display: inline-block;
-  width:50px;
+  width:30px;
 }
 
 #main-nav-logo{
@@ -18,7 +23,7 @@
 }
 
 #search-container{
-  padding:25px 0;
+  padding:25px 15px;
 }
 
 #search-box,
