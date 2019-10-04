@@ -24,4 +24,4 @@
 @endif
 
 <script type="text/javascript" src="/js/googleMaps.js"></script>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ Config::get('constants.options.googleMapsAPIKey') }}&callback=getLocation&libraries=places"></script>
+<script async defer type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ Config::get('constants.options.googleMapsAPIKey') }}&callback=initializeMap&libraries=places"></script>
