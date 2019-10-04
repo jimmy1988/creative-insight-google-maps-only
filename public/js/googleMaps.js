@@ -1,77 +1,55 @@
-var map;
-var infoWindow;
-var request;
-var service;
-var markers = [];
-var currentloc = {};
-// return ["52.477564", "-2.0037156"];
 var defaultLat = 52.4786758;
 var defaultLong = -1.9001709;
 var zoomlevel = 16;
-
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.watchPosition(function(position){
-      if(position == null){
-        currentloc.lat = defaultLat;
-        currentloc.long = defaultLong;
-        initializeMap();
-      }else{
-        currentloc.lat = position.coords.latitude;
-        currentloc.long = position.coords.longitude;
-        initializeMap();
-      }
-    }, function(){alert("Geolocation is not enabed in the browser");}, {maximumAge:10000, timeout:5000,enableHighAccuracy: true})
-  } else {
-    currentloc.lat = defaultLat;
-    currentloc.long = defaultLong;
-    initializeMap();
-  }
-}
+var map;
+var infoWindow;
+var center;
+var markers = [];
+var currentloc = {};
+var currentlocDetails = {};
+var request;
+var service;
 
 
-function initializeMap(){
-  // var inputSearch = document.getElementById("search-box");
-  // var autocomplete = new google.maps.places.Autocomplete(inputSearch);
+function initializeMap() {
+  $("#curtain-outer").show();
 
-  // var center = new google.maps.LatLng(defaultLat, defaultLong);
-  var center = new google.maps.LatLng(currentloc.lat, currentloc.long);
-  map = new google.maps.Map(document.getElementById('map'),{
-    center:center,
-    zoom:zoomlevel
+  center = {lat: defaultLat, lng: defaultLong};
+
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: center,
+    zoom: zoomlevel
   });
 
-  otherOptions = {};
-  otherOptions.icon =  {
-     url: "https://image.flaticon.com/icons/svg/60/60834.svg", // url
-     scaledSize: new google.maps.Size(30, 30)
-   };
+  infoWindow = new google.maps.InfoWindow;
 
-  currentloc.name = "Your Location";
+  // Try HTML5 geolocation.
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      currentloc.lat = position.coords.latitude;
+      currentloc.lng = position.coords.longitude;
 
-  createmarker(currentloc, otherOptions);
+      var otherOptions = {};
+      otherOptions.icon =  {
+         url: "https://image.flaticon.com/icons/svg/60/60834.svg", // url
+         scaledSize: new google.maps.Size(30, 30)
+       };
 
-  // request = {
-  //   location:center,
-  //   radius:80047,
-  //   name: ['nandos'],
-  //   types:['nandos']
-  // };
-  //
-  // infowindow = new google.maps.InfoWindow();
-  //
-  // service = new google.maps.places.PlacesService(map);
-  //
-  // service.nearbySearch(request, callback);
-}
+      otherOptions.name = "Your Location";
+      otherOptions.context = "Home";
 
+      createmarker(currentloc, otherOptions);
 
-function callback(results, status){
-  if(status == google.maps.places.PlacesServiceStatus.OK){
-    for(var i = 0; i < results.length; i++){
-      createmarker(results[i]);
-    }
+      map.setCenter(currentloc);
+    }, function() {
+      handleLocationError(true, infoWindow, map.getCenter());
+    }, {maximumAge:100, timeout:5000, enableHighAccuracy: true});
+  } else {
+    // Browser doesn't support Geolocation
+    handleLocationError(false, infoWindow, map.getCenter());
   }
+
+  $("#curtain-outer").fadeOut(500);
 }
 
 function createmarker(place, otherMapOptions = null){
@@ -82,9 +60,9 @@ function createmarker(place, otherMapOptions = null){
     place.geometry != undefined && place.geometry != null &&
     place.geometry.location != undefined && place.geometry.location != null
   ){
-    mapOptions.position = place.geometry.location;
+    mapOptions.position = {lat:place.geometry.location};
   }else{
-    mapOptions.position = {lat: place.lat, lng: place.long};
+    mapOptions.position = {lat: place.lat, lng: place.lng};
   }
 
 
@@ -93,16 +71,41 @@ function createmarker(place, otherMapOptions = null){
   }
 
   var marker = new google.maps.Marker(mapOptions);
+  if(
+    (otherMapOptions != undefined && otherMapOptions != null) &&
+    (otherMapOptions.context != undefined && otherMapOptions.context != null && otherMapOptions.context == "Home")
+  ){
+    currentlocDetails.marker = marker;
+  }else{
+    markers.push(marker);
+  }
 
-  if(place.name != undefined && place.name != null){
+
+  if((place != undefined && place != null) && place.name != undefined && place.name != null){
+    infoWindow = new google.maps.InfoWindow;
     google.maps.event.addListener(marker, 'click', function(){
       infowindow.setContent(place.name);
       infowindow.open(map, this);
     });
+  }else if ((otherMapOptions != undefined && otherMapOptions != null) && otherMapOptions.name != undefined && otherMapOptions.name != null) {
+    infoWindow = new google.maps.InfoWindow;
+    google.maps.event.addListener(marker, 'click', function(){
+      // infowindow.setContent(otherMapOptions.name);
+      infowindow.setContent("Hello");
+      infowindow.open(map, this);
+    });
   }
+  map.setCenter(currentloc);
+}
 
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+  infoWindow.setPosition(pos);
+  infoWindow.setContent(browserHasGeolocation ?
+                        'Error: The Geolocation service failed.' :
+                        'Error: Your browser doesn\'t support geolocation.');
+  infoWindow.open(map);
 }
 
 // $(document).ready(function(){
-//   getLocation();
+//   $("#searchForm").on("submit", searchMap);
 // });
