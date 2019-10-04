@@ -43,4 +43,17 @@
   </div>
 </div>
 
+<div class="container-fluid no-gutters" id="curtain-outer">
+  <div class="row text-center" id="curtain-inner">
+    <div class="col-xs-12">
+      <p>
+        <i class="fas fa-crosshairs fa-spin"></i>
+      </p>
+      <p>
+        Loading...
+      </p>
+    </div>
+  </div>
+</div>
+
 @endsection
