@@ -26,8 +26,8 @@ function initializeMap() {
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
-      currentloc.lat = position.coords.latitude;
-      currentloc.lng = position.coords.longitude;
+      currentloc.lat = parseFloat(position.coords.latitude);
+      currentloc.lng = parseFloat(position.coords.longitude);
 
       var otherOptions = {};
       otherOptions.icon =  {
@@ -37,6 +37,7 @@ function initializeMap() {
 
       otherOptions.name = "Your Location";
       otherOptions.context = "Home";
+      otherOptions.animation = google.maps.Animation.BOUNCE;
 
       createmarker(currentloc, otherOptions);
 
@@ -52,6 +53,16 @@ function initializeMap() {
   $("#curtain-outer").fadeOut(500);
 }
 
+//Removes the markers from the map, but keeps them in the array.
+function clearAllMarkers() {
+  if(markers.length > 1){
+    for (var i = 1; i < markers.length; i++) {
+          markers[i].setMap(null);
+          markers.splice(i, 1);
+    }
+  }
+}
+
 function createmarker(place, otherMapOptions = null){
 
   var mapOptions = {};
@@ -60,9 +71,9 @@ function createmarker(place, otherMapOptions = null){
     place.geometry != undefined && place.geometry != null &&
     place.geometry.location != undefined && place.geometry.location != null
   ){
-    mapOptions.position = {lat:place.geometry.location};
+    mapOptions.position = place.geometry.location;
   }else{
-    mapOptions.position = {lat: place.lat, lng: place.lng};
+    mapOptions.position = {lat: parseFloat(place.lat), lng: parseFloat(place.lng)};
   }
 
 
@@ -79,19 +90,20 @@ function createmarker(place, otherMapOptions = null){
   }else{
     markers.push(marker);
   }
+  map.setCenter(currentloc);
 
-
-  if((place != undefined && place != null) && place.name != undefined && place.name != null){
-    infoWindow = new google.maps.InfoWindow;
-    google.maps.event.addListener(marker, 'click', function(){
-      infowindow.setContent(place.name);
+  if(place != undefined && place != null && place.name != undefined && place.name != null){
+    var infowindow = new google.maps.InfoWindow({
+      content: place.name
+    });
+    marker.addListener('click', function(){
       infowindow.open(map, this);
     });
-  }else if ((otherMapOptions != undefined && otherMapOptions != null) && otherMapOptions.name != undefined && otherMapOptions.name != null) {
-    infoWindow = new google.maps.InfoWindow;
-    google.maps.event.addListener(marker, 'click', function(){
-      // infowindow.setContent(otherMapOptions.name);
-      infowindow.setContent("Hello");
+  }else if (otherMapOptions != undefined && otherMapOptions != null && otherMapOptions.name != undefined && otherMapOptions.name != null) {
+    var infowindow = new google.maps.InfoWindow({
+      content: otherMapOptions.name
+    });
+    marker.addListener('click', function(){
       infowindow.open(map, this);
     });
   }
@@ -106,6 +118,39 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.open(map);
 }
 
-// $(document).ready(function(){
-//   $("#searchForm").on("submit", searchMap);
-// });
+function plotMarkers(results, status){
+  if(status == google.maps.places.PlacesServiceStatus.OK){
+    for(var i = 0; i < results.length; i++){
+      createmarker(results[i]);
+    }
+  }
+}
+
+function searchMap(){
+  event.preventDefault();
+  $("#curtain-outer").fadeIn(500, function(){
+    clearAllMarkers();
+    var searchTerm = document.getElementById("search-box").value;
+    var distanceMiles = document.getElementById("distance-box").value;
+    var distanceMeters = Math.ceil((parseFloat(distanceMiles) * parseFloat("1609.344")) + parseFloat(distanceMiles));
+
+    request = {
+      location:center,
+      radius:distanceMeters,
+      name: [searchTerm],
+      types:[searchTerm]
+    };
+
+    service = new google.maps.places.PlacesService(map);
+    service.nearbySearch(request, plotMarkers);
+
+    map.setCenter(currentloc);
+    $("#curtain-outer").fadeOut(500);
+  });
+
+
+}
+
+$(document).ready(function(){
+  $("#searchForm").on("submit", searchMap);
+});
