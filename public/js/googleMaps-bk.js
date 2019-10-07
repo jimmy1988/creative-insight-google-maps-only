@@ -58,7 +58,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.open(map);
       }
 
-  Removes the markers from the map, but keeps them in the array.
+  //Removes the markers from the map, but keeps them in the array.
   function clearMarkers() {
     if(markers.length > 1){
       for (var i = 1; i < markers.length; i++) {
