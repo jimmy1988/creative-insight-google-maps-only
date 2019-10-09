@@ -32,13 +32,18 @@
     </div>
   </form>
   <div class="row" id="google-map-container">
-    <div class="col-md-9">
-      <div id="map">
-
-      </div>
+    <div class="col-md-9 no-gutters">
+      <div id="map"></div>
     </div>
-    <div class="col-md-3">
-
+    <div class="col-md-3 no-gutters">
+      <div class="card" id="rightPane">
+        <div class="card-header text-center" id="rightPaneHeader">
+          <h6>Your Search Results</h6>
+        </div>
+        <div class="card-body no-gutters" id="rightPaneContent">
+          
+        </div>
+      </div>
     </div>
   </div>
 </div>
