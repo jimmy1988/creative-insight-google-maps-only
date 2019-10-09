@@ -32,16 +32,16 @@
     </div>
   </form>
   <div class="row" id="google-map-container">
-    <div class="col-md-9 no-gutters">
+    <div class="col-md-9 no-gutters" id="mapContainerMain" style="display:block; width:100% !important; max-width:100%;flex:unset;">
       <div id="map"></div>
     </div>
-    <div class="col-md-3 no-gutters">
+    <div class="col-md-3 no-gutters" id="resultsContainer">
       <div class="card" id="rightPane">
         <div class="card-header text-center" id="rightPaneHeader">
-          <h6>Your Search Results</h6>
+          &nbsp;
         </div>
         <div class="card-body no-gutters" id="rightPaneContent">
-          
+
         </div>
       </div>
     </div>
