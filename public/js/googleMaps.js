@@ -15,15 +15,6 @@ var places = [];
 var distanceMiles;
 var distanceMeters;
 
-
-function checkAdult(age) {
-  return age >= 18;
-}
-
-function myFunction() {
-  document.getElementById("demo").innerHTML = ages.findIndex(checkAdult);
-}
-
 //Removes the markers from the map, but keeps them in the array.
 function clearAllMarkers(removeFromMap = true, removeFromArray = false, removeFromMapExceptions = [], removeFromArrayExceptions = []) {
   if(markers.length > 1){
@@ -130,14 +121,53 @@ function createmarker(place = null, markerOptions = null){
   return marker;
 }
 
+function displayDirections(route = []){
+  var html = "";
+  console.log(route);
+  if(route != undefined && route != null && route.length > 0){
+    html = html + "<div class=\"card-header text-center\" id=\"rightPaneHeader\">Directions</div>";
+
+    for(var i = 0; i < route.length; i++){
+      var stepNumber = i + 1;
+
+      html = html + "<div class=\"container-fluid directions-entry\">";
+      html = html + "<div class=\"directions-entry-row\">";
+      html = html + "<div class=\"step-number-container text-center\">";
+      html = html + "<div class=\"step-number\">" + stepNumber + "</div>";
+      html = html + "</div>";
+      html = html + "<div class=\"step-instructions-container text-center\">";
+      html = html + "<div class=\"step-instructions\">" + route[i].instructions + "</div>";
+      html = html + "</div>";
+      html = html + "<div class=\"clearfix\"></div>";
+      html = html + "</div>";
+      html = html + "</div>";
+    }
+
+
+
+  }
+
+  return html;
+}
+
 function getDirections(event, elem, markersArrayIndex = -1, placesArrayIndex = -1){
   event.preventDefault();
   if(placesArrayIndex != undefined && placesArrayIndex != null && placesArrayIndex >= 0){
-    clearAllMarkers(true, false);
 
     var directionsService = new google.maps.DirectionsService();
     var directionsRenderer = new google.maps.DirectionsRenderer();
     var thisPlace = places[placesArrayIndex];
+
+    clearAllMarkers(true, false);
+
+    var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentloc.lat, currentloc.lng), thisPlace.geometry.location);
+    distance = parseFloat(distance) / parseFloat("1609.344");
+    distance = parseFloat(distance.toFixed(1));
+
+    $("#rightPaneContent").html("");
+    $("#rightPaneContent").append(createListItem(thisPlace, distance, markersArrayIndex, placesArrayIndex));
+    $("#rightPaneContent .get-directions-button").hide();
+
 
     // var home = new google.maps.LatLng(center);
     var home = center;
@@ -154,7 +184,8 @@ function getDirections(event, elem, markersArrayIndex = -1, placesArrayIndex = -
     directionsService.route(request, function(result, status) {
       if (status == 'OK') {
         directionsRenderer.setDirections(result);
-        console.log(result);
+        var routeArray = result.routes[0].legs[0].steps
+        $("#rightPaneContent").append(displayDirections(routeArray));
       }
     });
 
@@ -272,6 +303,8 @@ function searchMap(){
 
     map.setCenter(currentloc);
     $("#curtain-outer").fadeOut(500);
+
+    $("#mapContainerMain").removeAttr("style");
   });
 
 
