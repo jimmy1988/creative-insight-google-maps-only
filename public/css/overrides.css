@@ -87,9 +87,56 @@
    background-color: grey;
  }
 
+ #rightPane{
+   width: 100%;
+   height: 400px;
+ }
+
+ #rightPaneContent{
+   overflow:auto;
+ }
+
  .main-block {
      padding: 15px 0;
  }
+
+ .map-entry {
+    width: 100%;
+    border-bottom: 2px solid #EFEFEF;
+    padding: 10px 15px;
+}
+
+.map-entry-title {
+    color: blue;
+}
+
+.map-entry-address {
+    font-style: italic;
+    font-size: 13px;
+    font-weight: 800;
+    margin: 0 0 5px 0;
+    padding: 0;
+}
+
+.map-entry-miles {
+    margin: 0 0 5px 0;
+    font-size: 13px;
+}
+
+.rating-stars {
+    color: yellow;
+}
+
+.rating {
+    margin: 0 0 5px 0;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.get-directions-button {
+    font-size: 12px;
+}
 
 @media screen and (max-width:767px){
   #search-button-container{
