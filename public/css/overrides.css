@@ -1,0 +1,185 @@
+.no-gutters{
+  padding:0 !important;
+  margin: 0 !important;
+}
+
+#curtain-outer{
+    color: #000;
+    font-size: 21px;
+    text-align: center;
+    display: block;
+    background: rgba(0,0,0,0.7);
+    z-index: 999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#curtain-inner{
+  margin-top: 15%;
+  text-align: center;
+  display: block;
+  color: #FFF;
+  font-size: 50px;
+}
+
+#curtain-inner p:first-child{
+    font-size: 50px;
+}
+
+#curtain-inner p:last-child{
+    font-size: 40px;
+}
+
+#map-container{
+  margin-bottom:55px;
+}
+
+#main-nav-logo-link{
+  display: inline-block;
+  width:30px;
+}
+
+#main-nav-logo{
+  display: inline-block;
+  width: 100%;
+}
+
+.main-content{
+  position: relative;
+  margin-top: 90px;
+}
+
+#search-container{
+  padding:25px 15px;
+}
+
+#search-box,
+#location-box{
+  padding:15px;
+  font-size: 17pt;
+}
+
+#distance-box{
+  font-size: 14pt;
+  height:48px;
+}
+
+#search-button {
+  padding: 6px 0;
+  font-size: 17pt;
+  font-weight: 400;
+  display: block;
+  width: 100%;
+}
+
+#search-button span i{
+  color:#FFFFFF;
+  font-size:14pt;
+}
+
+#map {
+   width: 100%;
+   height: 400px;
+   /* height: 100%; */
+   background-color: grey;
+ }
+
+ #rightPane{
+   width: 100%;
+   height: 400px;
+ }
+
+ #rightPaneContent{
+   overflow:auto;
+ }
+
+ .main-block {
+     padding: 15px 0;
+ }
+
+ .map-entry,
+ .directions-entry
+ {
+    width: 100%;
+    border-bottom: 2px solid #EFEFEF;
+    padding: 10px 15px;
+}
+
+.map-entry-title {
+    color: blue;
+}
+
+.map-entry-address {
+    font-style: italic;
+    font-size: 13px;
+    font-weight: 800;
+    margin: 0 0 5px 0;
+    padding: 0;
+}
+
+.map-entry-miles {
+    margin: 0 0 5px 0;
+    font-size: 13px;
+}
+
+.rating-stars {
+    color: yellow;
+}
+
+.rating {
+    margin: 0 0 5px 0;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.get-directions-button {
+    font-size: 12px;
+}
+
+.resultsContainer{
+  position: relative;
+  left:0;
+}
+
+#rightPaneHeader {
+    padding: 5px 0;
+}
+
+.step-number-container {
+    display: block;
+    float: left;
+    width: 15%;
+    font-weight: 800;
+}
+
+.step-number {
+    background: red;
+    color: #FFF;
+    border-radius: 7em;
+    width: 32px;
+    text-align: center;
+    padding: 5px;
+    margin: 10px;
+}
+
+.step-instructions-container {
+    display: block;
+    width: 85%;
+    float: right;
+    font-weight: 800;
+}
+
+.step-instructions {
+    margin: 10px 0;
+    padding: 0 10px;
+}
+
+@media screen and (max-width:767px){
+  #search-button-container{
+    margin-top:25px;
+  }
+}

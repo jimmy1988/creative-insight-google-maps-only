@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Http\Request;
 
-class ForgotPasswordController extends Controller
+class FrontendForgotPasswordController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
@@ -28,5 +29,15 @@ class ForgotPasswordController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    //Overrides
+
+    public function sendResetLinkEmail(Request $request){
+
+    }
+
+    public function showLinkRequestForm(){
+
     }
 }
