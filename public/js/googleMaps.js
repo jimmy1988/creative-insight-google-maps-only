@@ -14,10 +14,13 @@ var distanceMatrix;
 var places = [];
 var distanceMiles;
 var distanceMeters;
+var directionsService;
+var directionsRenderer
+
 
 //Removes the markers from the map, but keeps them in the array.
 function clearAllMarkers(removeFromMap = true, removeFromArray = false, removeFromMapExceptions = [], removeFromArrayExceptions = []) {
-  if(markers.length > 1){
+  if(markers.length > 0){
     for (var i = 0; i < markers.length; i++) {
       if(removeFromMap == true){
         if(removeFromMapExceptions.indexOf(i) == -1){
@@ -33,6 +36,10 @@ function clearAllMarkers(removeFromMap = true, removeFromArray = false, removeFr
       }
     }
   }
+}
+
+function clearDirections(){
+  directionsRenderer.setMap(null);
 }
 
 function createListItem(place = null, distance = 0, markersArrayIndex = 0, placesArrayIndex = 0){
@@ -76,7 +83,7 @@ function createListItem(place = null, distance = 0, markersArrayIndex = 0, place
     html = html + "<span>" + place.rating + "</span>";
     html = html + "</p>";
     html = html + "</div>";
-    html = html + "<div class=\"col-md-12 text-right\">";
+    html = html + "<div class=\"col-md-12 text-right directionsButtonContainer\">";
     html = html + "<a href=\"#\" onclick=\"getDirections(event, this," + markersArrayIndex + ", " + placesArrayIndex + ")\" class=\"btn btn-info get-directions-button\">Get Directions</a>";
     html = html + "</div>";
     html = html + "</div>";
@@ -123,7 +130,6 @@ function createmarker(place = null, markerOptions = null){
 
 function displayDirections(route = []){
   var html = "";
-  console.log(route);
   if(route != undefined && route != null && route.length > 0){
     html = html + "<div class=\"card-header text-center\" id=\"rightPaneHeader\">Directions</div>";
 
@@ -142,9 +148,6 @@ function displayDirections(route = []){
       html = html + "</div>";
       html = html + "</div>";
     }
-
-
-
   }
 
   return html;
@@ -153,12 +156,9 @@ function displayDirections(route = []){
 function getDirections(event, elem, markersArrayIndex = -1, placesArrayIndex = -1){
   event.preventDefault();
   if(placesArrayIndex != undefined && placesArrayIndex != null && placesArrayIndex >= 0){
-
-    var directionsService = new google.maps.DirectionsService();
-    var directionsRenderer = new google.maps.DirectionsRenderer();
     var thisPlace = places[placesArrayIndex];
 
-    clearAllMarkers(true, false);
+    resetAll(true, false, true, false);
 
     var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentloc.lat, currentloc.lng), thisPlace.geometry.location);
     distance = parseFloat(distance) / parseFloat("1609.344");
@@ -166,10 +166,9 @@ function getDirections(event, elem, markersArrayIndex = -1, placesArrayIndex = -
 
     $("#rightPaneContent").html("");
     $("#rightPaneContent").append(createListItem(thisPlace, distance, markersArrayIndex, placesArrayIndex));
-    $("#rightPaneContent .get-directions-button").hide();
+    $("#rightPaneContent .directionsButtonContainer .get-directions-button").hide();
+    $("#rightPaneContent .directionsButtonContainer").append("<a href=\"#\" onclick=\"resetSearchResults()\" class=\"btn btn-success resetSearchResultsButton\">Restore Search</a>");
 
-
-    // var home = new google.maps.LatLng(center);
     var home = center;
     var destination = thisPlace.geometry.location;
 
@@ -189,7 +188,6 @@ function getDirections(event, elem, markersArrayIndex = -1, placesArrayIndex = -
       }
     });
 
-
   }else{
     alert("No location found");
   }
@@ -201,32 +199,6 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
                         'Error: The Geolocation service failed.' :
                         'Error: Your browser doesn\'t support geolocation.');
   infoWindow.open(map);
-}
-
-function plotMarkers(results, status){
-  if(status == google.maps.places.PlacesServiceStatus.OK){
-    for(var i = 0; i < results.length; i++){
-
-      var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentloc.lat, currentloc.lng), results[i].geometry.location);
-      distance = parseFloat(distance) / parseFloat("1609.344");
-      distance = parseFloat(distance.toFixed(1));
-
-      var totalDistance = parseInt(distanceMiles) + 5;
-
-      if(distance <= totalDistance){
-        places.push(results[i]);
-        var thisMarker = createmarker(results[i]);
-        markers.push(thisMarker);
-        var thisInfoWindow = createInfoWindow(results[i], thisMarker);
-        $("#rightPaneContent").append(createListItem(results[i], distance, i, i));
-      }else{
-        break;
-      }
-    }
-
-    zoomlevel = 10;
-    map.setZoom(zoomlevel);
-  }
 }
 
 function initializeMap() {
@@ -241,6 +213,9 @@ function initializeMap() {
 
   infoWindow = new google.maps.InfoWindow;
   marker = new google.maps.Marker;
+
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer();
 
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
@@ -280,11 +255,74 @@ function initializeMap() {
   $("#curtain-outer").fadeOut(500);
 }
 
+function plotMarkers(results, status){
+  if(status == google.maps.places.PlacesServiceStatus.OK){
+    markers = [];
+    places = [];
+    for(var i = 0; i < results.length; i++){
+
+      var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentloc.lat, currentloc.lng), results[i].geometry.location);
+      distance = parseFloat(distance) / parseFloat("1609.344");
+      distance = parseFloat(distance.toFixed(1));
+
+      var totalDistance = parseInt(distanceMiles) + 5;
+
+      if(distance <= totalDistance){
+        places.push(results[i]);
+        var thisMarker = createmarker(results[i]);
+        markers.push(thisMarker);
+        var thisInfoWindow = createInfoWindow(results[i], thisMarker);
+        $("#rightPaneContent").append(createListItem(results[i], distance, i, i));
+      }else{
+        break;
+      }
+    }
+
+    zoomlevel = 10;
+    map.setZoom(zoomlevel);
+  }
+}
+
+function resetAll(map = false, form = false, removeFromMap = true, removeFromArray = false, removeFromMapExceptions = [], removeFromArrayExceptions = []){
+  if(map == true){
+    clearAllMarkers(removeFromMap, removeFromArray, removeFromMapExceptions, removeFromArrayExceptions);
+    clearDirections();
+    $("#rightPaneContent").html("");
+  }
+
+  if(form == true){
+    $("#search-box").val("");
+    $("#distance-box").val("0");
+  }
+}
+
+function resetSearchResults(){
+  resetAll(true, false, true, false);
+  for(var i = 0; i < places.length; i++){
+
+    var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentloc.lat, currentloc.lng), places[i].geometry.location);
+    distance = parseFloat(distance) / parseFloat("1609.344");
+    distance = parseFloat(distance.toFixed(1));
+
+    var totalDistance = parseInt(distanceMiles) + 5;
+
+    if(distance <= totalDistance){
+      var thisMarker = createmarker(places[i]);
+      var thisInfoWindow = createInfoWindow(places[i], thisMarker);
+      $("#rightPaneContent").append(createListItem(places[i], distance, i, i));
+    }else{
+      break;
+    }
+  }
+
+  zoomlevel = 10;
+  map.setZoom(zoomlevel);
+}
+
 function searchMap(){
   event.preventDefault();
   $("#curtain-outer").fadeIn(500, function(){
-    clearAllMarkers(true, true);
-    $("#rightPaneContent").html("");
+    resetAll(true, false, true, true);
     zoomlevel = 16;
     map.setZoom(zoomlevel);
     var searchTerm = document.getElementById("search-box").value;
